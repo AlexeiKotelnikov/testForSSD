@@ -4,20 +4,12 @@ declare(strict_types=1);
 
 namespace Controllers;
 
-use Exceptions\DbException;
 use Exceptions\InvalidArgumentException;
 use Models\Users\User;
 use Models\Users\UsersAuthService;
-use View\View;
 
-class UsersController
+class UsersController extends AbstractController
 {
-    private View $view;
-
-    public function __construct()
-    {
-        $this->view = new View(__DIR__ . '/../../templates');
-    }
 
     public function signUp(): void
     {

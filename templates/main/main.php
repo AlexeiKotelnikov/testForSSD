@@ -19,7 +19,7 @@
     </tr>
     <tr>
         <td>
-            <p>Ну очень важная информация</p>
+            <p>Инфо о пользователе</p>
             <ul>
                 <li><?= !empty($user) ? 'Ваш email: ' . $user->getEmail() : '' ?></li>
                 <li><?= !empty($user) ? 'Ваш возраст: ' . $user->getAge() : '' ?></li>
