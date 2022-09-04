@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Models\Users;
 
 use Exception;
@@ -19,6 +21,27 @@ class User extends ActiveRecordEntity
     protected string $authToken;
 
     protected int $age;
+
+
+    public function getAuthToken(): string
+    {
+        return $this->authToken;
+    }
+
+    public function getNickname(): string
+    {
+        return $this->nickname;
+    }
+
+    public function getEmail(): string
+    {
+        return $this->email;
+    }
+
+    public function getAge(): int
+    {
+        return $this->age;
+    }
 
     /**
      * @throws InvalidArgumentException
@@ -71,13 +94,59 @@ class User extends ActiveRecordEntity
         $user->email = $userData['email'];
         $user->passwordHash = password_hash($userData['password'], PASSWORD_DEFAULT);
         $user->authToken = sha1(random_bytes(100)) . sha1(random_bytes(100));
-        $user->age = $userData['age'];
-        var_dump($user);
+        $user->age = (int)$userData['age'];
         $user->save();
 
         return $user;
     }
 
+    /**
+     * @throws InvalidArgumentException
+     * @throws Exception
+     */
+    public static function login(array $loginData): User
+    {
+        if (empty($loginData['nickname'])) {
+            throw new InvalidArgumentException('Не передан nickname');
+        }
+
+        if (empty($loginData['password'])) {
+            throw new InvalidArgumentException('Не передан password');
+        }
+
+        $user = User::findOneByColumn('nickname', $loginData['nickname']);
+        if ($user === null) {
+            throw new InvalidArgumentException('Нет пользователя с таким nickname');
+        }
+
+        if (!password_verify($loginData['password'], $user->getPasswordHash())) {
+            throw new InvalidArgumentException('Неправильный пароль');
+        }
+
+        /*if (!$user->isConfirmed) {
+            throw new InvalidArgumentException('Пользователь не подтверждён');
+        }*/
+
+        $user->refreshAuthToken();
+        $token = $user->getAuthToken();
+        $a = ['auth_token' => $token];
+        $user->update($a);
+
+        return $user;
+    }
+
+    public function getPasswordHash(): string
+    {
+        return $this->passwordHash;
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function refreshAuthToken()
+    {
+        $this->authToken = sha1(random_bytes(100)) . sha1(random_bytes(100));
+    }
 
     protected static function getTableName(): string
     {

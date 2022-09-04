@@ -1,9 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Models\DataBase;
 
-
-use Exceptions\DbException;
 use ReflectionObject;
 use Services\Db;
 
@@ -13,10 +13,10 @@ abstract class ActiveRecordEntity
     /**
      * @return int
      */
-    /*public function getId(): int
+    public function getId(): int
     {
         return $this->id;
-    }*/
+    }
 
     public function __set(string $name, $value)
     {
@@ -31,7 +31,6 @@ abstract class ActiveRecordEntity
 
     /**
      * @return static[]
-     * @throws DbException
      */
     public static function findAll(): array
     {
@@ -42,7 +41,6 @@ abstract class ActiveRecordEntity
     /**
      * @param int $id
      * @return static|null
-     * @throws DbException
      */
     public static function getById(int $id): ?self
     {
@@ -55,9 +53,7 @@ abstract class ActiveRecordEntity
         return $entities ? $entities[0] : null;
     }
 
-    /**
-     * @throws DbException
-     */
+
     public function save(): void
     {
         $mappedProperties = $this->mapPropertiesToDbFormat();
@@ -66,9 +62,6 @@ abstract class ActiveRecordEntity
 
     }
 
-    /**
-     * @throws DbException
-     */
     public static function findOneByColumn(string $columnName, $value): ?self
     {
         $db = Db::getInstance();
@@ -85,9 +78,7 @@ abstract class ActiveRecordEntity
 
     abstract protected static function getTableName(): string;
 
-    /**
-     * @throws DbException
-     */
+
     private function insert(array $mappedProperties): void
     {
         $filteredProperties = array_filter($mappedProperties);
@@ -113,9 +104,23 @@ abstract class ActiveRecordEntity
         $this->refresh();
     }
 
-    /**
-     * @throws DbException
-     */
+
+    public function update(array $mappedProperties): void
+    {
+        $columns2params = [];
+        $params2values = [];
+        $index = 1;
+        foreach ($mappedProperties as $column => $value) {
+            $param = ':param' . $index; // :param1
+            $columns2params[] = $column . ' = ' . $param; // column1 = :param1
+            $params2values[$param] = $value; // [:param1 => value1]
+            $index++;
+        }
+        $sql = 'UPDATE ' . static::getTableName() . ' SET ' . implode(', ', $columns2params) . ' WHERE id = ' . $this->id;
+        $db = Db::getInstance();
+        $db->query($sql, $params2values, static::class);
+    }
+
     private function refresh(): void
     {
         $objectFromDb = static::getById($this->id);

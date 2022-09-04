@@ -1,12 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Services;
 
 use Exception;
 use Exceptions\DbException;
 use PDO;
 use PDOException;
-use SQLite3;
 
 class Db
 {
@@ -14,7 +15,6 @@ class Db
 
     private PDO $pdo;
     const DB_NAME = 'users12.sqlite';
-    const ERROR_PROP = 'Wrong property name';
 
     /**
      * @throws DbException
@@ -31,29 +31,15 @@ class Db
                     email TEXT,
                     password_hash TEXT,
                     age INTEGER,
-                    auth_token TEXT,
-                    datetime INTEGER)";
+                    auth_token TEXT)";
                 if (!$this->pdo->exec($sql))
                     throw new Exception('Не могу создать таблицу');
             } catch (PDOException $e) {
                 throw new DbException('Ошибка при подключении к базе данных: ' . $e->getMessage());
             }
-        }
+        } else{return true;}
+
     }
-
-    /**
-     * @throws DbException
-     */
-    /*private function __construct()
-    {
-
-        try {
-            $this->pdo = new PDO('sqlite:users1.sqlite');
-            $this->pdo->exec('SET NAMES UTF8');
-        } catch (PDOException $e) {
-            throw new DbException('Ошибка при подключении к базе данных: ' . $e->getMessage());
-        }
-    }*/
 
     public function query(string $sql, array $params = [], string $className = 'stdClass'): ?array
     {

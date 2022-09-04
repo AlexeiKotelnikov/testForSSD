@@ -13,15 +13,27 @@
         </td>
     </tr>
     <tr>
+        <td colspan="2" style="text-align: right">
+            <?= !empty($user) ? 'Привет, ' . $user->getNickname() : 'Войдите на сайт' ?>
+        </td>
+    </tr>
+    <tr>
         <td>
             <p>Ну очень важная информация</p>
+            <ul>
+                <li><?= !empty($user) ? 'Ваш email: ' . $user->getEmail() : '' ?></li>
+                <li><?= !empty($user) ? 'Ваш возраст: ' . $user->getAge() : '' ?></li>
+                <li><?= !empty($user) ? 'Ваш nickname: ' . $user->getNickname() : '' ?></li>
+            </ul>
+
         </td>
 
         <td width="300px" class="sidebar">
             <div class="sidebarHeader">Меню</div>
             <ul>
                 <li><a href="<?= BASE_URL ?>">Главная страница</a></li>
-                <li><a href="<?= BASE_URL ?>/users/register/">Регистрация</a></li>
+                <li><a href="<?= BASE_URL ?>/users/login">Вход</a></li>
+                <li><a href="<?= BASE_URL ?>/users/register">Регистрация</a></li>
             </ul>
         </td>
     </tr>

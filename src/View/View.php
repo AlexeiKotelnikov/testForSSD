@@ -4,19 +4,29 @@ namespace View;
 
 class View
 {
-    private string $templatePath;
+    private string $templatesPath;
 
-    public function __construct(string $templatePath)
+    private array $extraVars = [];
+
+    public function __construct(string $templatesPath)
     {
-        $this->templatePath = $templatePath;
+        $this->templatesPath = $templatesPath;
     }
 
-    public function renderHtml(string $templateName, array $vars = []): void
+    public function setVar(string $name, $value): void
     {
+        $this->extraVars[$name] = $value;
+    }
+
+    public function renderHtml(string $templateName, array $vars = [], int $code = 200): void
+    {
+        http_response_code($code);
+
+        extract($this->extraVars);
         extract($vars);
 
         ob_start();
-        include $this->templatePath . '/' . $templateName;
+        include $this->templatesPath . '/' . $templateName;
         $buffer = ob_get_contents();
         ob_end_clean();
 

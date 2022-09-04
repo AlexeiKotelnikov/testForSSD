@@ -11,7 +11,6 @@ try {
     });
 
     $route = $_GET['route'] ?? '';
-    var_dump($route);
     $routes = require __DIR__ . '/src/routes.php';
 
     $isRouteFound = false;
