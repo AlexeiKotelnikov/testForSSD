@@ -8,17 +8,17 @@ use Models\DataBase\ActiveRecordEntity;
 
 class User extends ActiveRecordEntity
 {
+
     protected string $nickname;
 
     protected string $email;
 
-    protected int $isConfirmed;
 
     protected string $passwordHash;
 
     protected string $authToken;
 
-    protected string $createdAt;
+    protected int $age;
 
     /**
      * @throws InvalidArgumentException
@@ -30,7 +30,7 @@ class User extends ActiveRecordEntity
             throw new InvalidArgumentException('Не передан nickname');
         }
 
-        if (!preg_match('/^[a-zA-Z0-9]+$/', $userData['nickname'])) {
+        if (!preg_match('/^[a-zA-Z\d]+$/', $userData['nickname'])) {
             throw new InvalidArgumentException('Nickname может состоять только из символов латинского алфавита и цифр');
         }
 
@@ -50,6 +50,14 @@ class User extends ActiveRecordEntity
             throw new InvalidArgumentException('Пароль должен быть не менее 8 символов');
         }
 
+        if (empty($userData['age'])) {
+            throw new InvalidArgumentException('Не передан возраст');
+        }
+
+        if (!preg_match('/^[1-9]\d*$/', $userData['age'])) {
+            throw new InvalidArgumentException('Возраст может состоять только из положительных цифр');
+        }
+
         if (static::findOneByColumn('nickname', $userData['nickname']) !== null) {
             throw new InvalidArgumentException('Пользователь с таким Nickname уже существует');
         }
@@ -62,10 +70,10 @@ class User extends ActiveRecordEntity
         $user->nickname = $userData['nickname'];
         $user->email = $userData['email'];
         $user->passwordHash = password_hash($userData['password'], PASSWORD_DEFAULT);
-        $user->isConfirmed = false;
         $user->authToken = sha1(random_bytes(100)) . sha1(random_bytes(100));
+        $user->age = $userData['age'];
         var_dump($user);
-        //$user->save();
+        $user->save();
 
         return $user;
     }

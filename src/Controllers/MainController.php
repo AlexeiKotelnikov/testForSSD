@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Controllers;
 
-use Services\DB;
+use Services\Db;
 use View\View;
 
 class MainController

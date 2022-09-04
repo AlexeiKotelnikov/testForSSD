@@ -8,30 +8,32 @@ use PDO;
 use PDOException;
 use SQLite3;
 
-class DB
+class Db
 {
     private static $instance;
 
     private PDO $pdo;
-    const DB_NAME = 'users1.sqlite';
+    const DB_NAME = 'users12.sqlite';
     const ERROR_PROP = 'Wrong property name';
-    private SQLite3 $_db;
 
+    /**
+     * @throws DbException
+     * @throws Exception
+     */
     function __construct()
     {
-        $this->_db = new SQLite3(self::DB_NAME);
+        $this->pdo = new PDO('sqlite:users12.sqlite');
         if (!filesize(self::DB_NAME)) {
             try {
                 $sql = "CREATE TABLE users(
-                    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL  UNIQUE,
-                    name TEXT,
+                    id INTEGER  PRIMARY KEY AUTO_INCREMENT  NOT NULL  UNIQUE,
+                    nickname TEXT,
                     email TEXT,
-                    password TEXT,
                     password_hash TEXT,
                     age INTEGER,
                     auth_token TEXT,
                     datetime INTEGER)";
-                if (!$this->_db->exec($sql))
+                if (!$this->pdo->exec($sql))
                     throw new Exception('Не могу создать таблицу');
             } catch (PDOException $e) {
                 throw new DbException('Ошибка при подключении к базе данных: ' . $e->getMessage());

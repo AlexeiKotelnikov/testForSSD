@@ -10,6 +10,8 @@
         <br><br>
         <label>Password <input type="password" name="password" value="<?= $_POST['password'] ?? '' ?>"></label>
         <br><br>
+        <label>Age<input type="text" name="age" value="<?= $_POST['age'] ?? '' ?>"></label>
+        <br><br>
         <input type="submit" value="Register">
     </form>
 </div>

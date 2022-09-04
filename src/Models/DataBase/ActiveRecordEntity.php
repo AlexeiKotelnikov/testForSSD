@@ -3,20 +3,20 @@
 namespace Models\DataBase;
 
 
-use Services\DB;
+use Exceptions\DbException;
+use ReflectionObject;
+use Services\Db;
 
 abstract class ActiveRecordEntity
 {
 
-    protected int $id;
-
     /**
      * @return int
      */
-    public function getId(): int
+    /*public function getId(): int
     {
         return $this->id;
-    }
+    }*/
 
     public function __set(string $name, $value)
     {
@@ -31,20 +31,22 @@ abstract class ActiveRecordEntity
 
     /**
      * @return static[]
+     * @throws DbException
      */
     public static function findAll(): array
     {
-        $db = $db = Db::getInstance();
+        $db = Db::getInstance();
         return $db->query('SELECT * FROM `' . static::getTableName() . '`;', [], static::class);
     }
 
     /**
      * @param int $id
      * @return static|null
+     * @throws DbException
      */
     public static function getById(int $id): ?self
     {
-        $db = $db = Db::getInstance();
+        $db = Db::getInstance();
         $entities = $db->query(
             'SELECT * FROM `' . static::getTableName() . '` WHERE id=:id;',
             [':id' => $id],
@@ -53,26 +55,20 @@ abstract class ActiveRecordEntity
         return $entities ? $entities[0] : null;
     }
 
+    /**
+     * @throws DbException
+     */
     public function save(): void
     {
         $mappedProperties = $this->mapPropertiesToDbFormat();
-        if ($this->id !== null) {
-            $this->update($mappedProperties);
-        } else {
-            $this->insert($mappedProperties);
-        }
+
+        $this->insert($mappedProperties);
+
     }
 
-    public function delete(): void
-    {
-        $db = Db::getInstance();
-        $db->query(
-            'DELETE FROM `' . static::getTableName() . '` WHERE id = :id',
-            [':id' => $this->id]
-        );
-        $this->id = null;
-    }
-
+    /**
+     * @throws DbException
+     */
     public static function findOneByColumn(string $columnName, $value): ?self
     {
         $db = Db::getInstance();
@@ -89,7 +85,9 @@ abstract class ActiveRecordEntity
 
     abstract protected static function getTableName(): string;
 
-
+    /**
+     * @throws DbException
+     */
     private function insert(array $mappedProperties): void
     {
         $filteredProperties = array_filter($mappedProperties);
@@ -115,24 +113,26 @@ abstract class ActiveRecordEntity
         $this->refresh();
     }
 
-    /*    private function refresh(): void
-        {
-            $objectFromDb = static::getById($this->id);
-            $reflector = new \ReflectionObject($objectFromDb);
-            $properties = $reflector->getProperties();
+    /**
+     * @throws DbException
+     */
+    private function refresh(): void
+    {
+        $objectFromDb = static::getById($this->id);
+        $reflector = new ReflectionObject($objectFromDb);
+        $properties = $reflector->getProperties();
 
-            foreach ($properties as $property) {
-                $property->setAccessible(true);
-                $propertyName = $property->getName();
-                $this->$propertyName = $property->getValue($objectFromDb);
-            }
-        }*/
+        foreach ($properties as $property) {
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+            $this->$propertyName = $property->getValue($objectFromDb);
+        }
+    }
 
     private function mapPropertiesToDbFormat(): array
     {
-        $reflector = new \ReflectionObject($this);
+        $reflector = new ReflectionObject($this);
         $properties = $reflector->getProperties();
-
         $mappedProperties = [];
         foreach ($properties as $property) {
             $propertyName = $property->getName();
