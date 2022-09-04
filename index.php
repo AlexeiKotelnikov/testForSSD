@@ -43,4 +43,7 @@ try {
 } catch (Exceptions\NotFoundException $e) {
     $view = new View(__DIR__ . '/templates/errors');
     $view->renderHtml('404.php', ['error' => $e->getMessage()], 404);
+}catch (Exceptions\UnauthorizedException $e) {
+    $view = new View(__DIR__ . '/../templates/errors');
+    $view->renderHtml('401.php', ['error' => $e->getMessage()], 401);
 }

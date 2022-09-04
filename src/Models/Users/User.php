@@ -123,10 +123,6 @@ class User extends ActiveRecordEntity
             throw new InvalidArgumentException('Неправильный пароль');
         }
 
-        /*if (!$user->isConfirmed) {
-            throw new InvalidArgumentException('Пользователь не подтверждён');
-        }*/
-
         $user->refreshAuthToken();
         $token = $user->getAuthToken();
         $a = ['auth_token' => $token];

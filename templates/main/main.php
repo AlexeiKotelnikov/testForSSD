@@ -31,9 +31,14 @@
         <td width="300px" class="sidebar">
             <div class="sidebarHeader">Меню</div>
             <ul>
-                <li><a href="<?= BASE_URL ?>">Главная страница</a></li>
-                <li><a href="<?= BASE_URL ?>/users/login">Вход</a></li>
-                <li><a href="<?= BASE_URL ?>/users/register">Регистрация</a></li>
+                <?php if (empty($user)): ?>
+                    <li><a href="<?= BASE_URL ?>">Главная страница</a></li>
+                    <li><a href="<?= BASE_URL ?>/users/login">Вход</a></li>
+                    <li><a href="<?= BASE_URL ?>/users/register">Регистрация</a></li>
+                <?php else: ?>
+                    <li><a href="<?= BASE_URL ?>">Главная страница</a></li>
+                    <li><a href="<?= BASE_URL ?>/users/login">Выход</a></li>
+                <?php endif; ?>
             </ul>
         </td>
     </tr>
