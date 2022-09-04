@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Controllers;
 
 use Exceptions\InvalidArgumentException;
+use JetBrains\PhpStorm\NoReturn;
 use Models\Users\User;
 use Models\Users\UsersAuthService;
 
@@ -45,5 +46,13 @@ class UsersController extends AbstractController
         }
 
         $this->view->renderHtml('users/login.php');
+    }
+
+     #[NoReturn] public function logout() :void
+    {
+        setcookie('token', '', time() - 42000, BASE_URL);
+        unset($_COOKIE['token']);
+        header('Location: ' . BASE_URL);
+        exit();
     }
 }

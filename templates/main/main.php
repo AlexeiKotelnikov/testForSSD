@@ -24,6 +24,13 @@
                 <li><?= !empty($user) ? 'Ваш email: ' . $user->getEmail() : '' ?></li>
                 <li><?= !empty($user) ? 'Ваш возраст: ' . $user->getAge() : '' ?></li>
                 <li><?= !empty($user) ? 'Ваш nickname: ' . $user->getNickname() : '' ?></li>
+                <?php if (!empty($user) && ($user->getAge() < 18)): ?>
+                    <h2>Только Здесь и Сейчас - Акция на вейпы!</h2>
+                <?php elseif (!empty($user) && ($user->getAge() > 50)): ?>
+                    <h2>Замечательные путевки в санаторий "Все тлен"</h2>
+                <?php else : ?>
+                    <h2>Для вас, к сожалению, у нас предложений нет :(</h2>
+                <?php endif; ?>
             </ul>
 
         </td>
@@ -37,7 +44,7 @@
                     <li><a href="<?= BASE_URL ?>/users/register">Регистрация</a></li>
                 <?php else: ?>
                     <li><a href="<?= BASE_URL ?>">Главная страница</a></li>
-                    <li><a href="<?= BASE_URL ?>/users/login">Выход</a></li>
+                    <li><a href="<?= BASE_URL ?>/users/logout">Выход</a></li>
                 <?php endif; ?>
             </ul>
         </td>
