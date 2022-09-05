@@ -1,3 +1,9 @@
+<?php
+if (!empty($user)) {
+    header('Location:' . BASE_URL);
+    exit();
+}
+?>
 <div style="text-align: center">
     <h1>Регистрация</h1>
     <?php if (!empty($error)): ?>

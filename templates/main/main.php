@@ -19,19 +19,23 @@
     </tr>
     <tr>
         <td>
-            <p>Инфо о пользователе</p>
-            <ul>
-                <li><?= !empty($user) ? 'Ваш email: ' . $user->getEmail() : '' ?></li>
-                <li><?= !empty($user) ? 'Ваш возраст: ' . $user->getAge() : '' ?></li>
-                <li><?= !empty($user) ? 'Ваш nickname: ' . $user->getNickname() : '' ?></li>
-                <?php if (!empty($user) && ($user->getAge() < 18)): ?>
-                    <h2>Только Здесь и Сейчас - Акция на вейпы!</h2>
-                <?php elseif (!empty($user) && ($user->getAge() > 50)): ?>
-                    <h2>Замечательные путевки в санаторий "Все тлен"</h2>
-                <?php else : ?>
-                    <h2>Для вас, к сожалению, у нас предложений нет :(</h2>
-                <?php endif; ?>
-            </ul>
+            <?php if (!empty($user)): ?>
+                <p>Инфо о пользователе</p>
+                <ul>
+                    <li><?= 'Ваш email: ' . $user->getEmail() ?></li>
+                    <li><?= 'Ваш возраст: ' . $user->getAge() ?></li>
+                    <li><?= 'Ваш nickname: ' . $user->getNickname() ?></li>
+                    <?php if ($user->getAge() < 18): ?>
+                        <h2>Только Здесь и Сейчас - Акция на вейпы!</h2>
+                    <?php elseif ($user->getAge() > 50): ?>
+                        <h2>Замечательные путевки в санаторий "Все тлен"</h2>
+                    <?php else : ?>
+                        <h2>Для вас, к сожалению, у нас предложений нет :(</h2>
+                    <?php endif; ?>
+                </ul>
+            <?php else: ?>
+                <p>Об неавторизованных пользователях информации нету</p>
+            <?php endif; ?>
 
         </td>
 

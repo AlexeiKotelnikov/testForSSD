@@ -23,6 +23,7 @@ class UsersController extends AbstractController
             }
 
             if ($user instanceof User) {
+                UsersAuthService::createToken($user);
                 $this->view->renderHtml('users/signUpSuccessful.php');
                 return;
             }
@@ -50,8 +51,7 @@ class UsersController extends AbstractController
 
      #[NoReturn] public function logout() :void
     {
-        setcookie('token', '', time() - 42000, BASE_URL);
-        unset($_COOKIE['token']);
+        UsersAuthService::destroyToken();
         header('Location: ' . BASE_URL);
         exit();
     }
